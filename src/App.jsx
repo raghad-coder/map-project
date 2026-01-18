@@ -23,39 +23,37 @@ function App() {
         ))}
       </div>
 
-      <AnimatePresence>
-        {activeArea && (
-          <motion.div 
-            className="overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setActiveArea(null)}
-          >
-            <motion.div 
-              className="modal"
-              /* هنا نطبق لون الخلفية الخاص بكل رقم */
-              style={{ backgroundColor: activeArea.color }}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* زر الإغلاق X في الزاوية */}
-              <button className="close-btn" onClick={() => setActiveArea(null)}>
-                ×
-              </button>
+<AnimatePresence>
+  {activeArea && (
+    <motion.div 
+      className="overlay"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={() => setActiveArea(null)}
+    >
+      <motion.div 
+        className="modal"
+        initial={{ scale: 0.7, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.7, opacity: 0 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* زر الإغلاق الدائري الأحمر السميك */}
+        <button className="close-btn" onClick={() => setActiveArea(null)}>
+          ×
+        </button>
 
-              {/* الصورة الملونة التي تحتوي على اسم المنطقة */}
-              <img 
-                src={activeArea.img} 
-                alt={activeArea.title} 
-                className="modal-img" 
-              />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        {/* الصورة التي تحتوي على الجزء الملون والنص */}
+        <img 
+          src={activeArea.img} 
+          alt={activeArea.title} 
+          className="modal-img" 
+        />
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
     </div>
   );
 }

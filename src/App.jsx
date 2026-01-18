@@ -34,16 +34,24 @@ function App() {
           >
             <motion.div 
               className="modal"
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              /* هنا نطبق لون الخلفية الخاص بكل رقم */
+              style={{ backgroundColor: activeArea.color }}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
             >
-              <img src={activeArea.img} alt={activeArea.title} />
-              <h2>{activeArea.title}</h2>
-              <p>{activeArea.desc}</p>
-              <button className="close-btn" onClick={() => setActiveArea(null)}>إغلاق</button>
+              {/* زر الإغلاق X في الزاوية */}
+              <button className="close-btn" onClick={() => setActiveArea(null)}>
+                ×
+              </button>
+
+              {/* الصورة الملونة التي تحتوي على اسم المنطقة */}
+              <img 
+                src={activeArea.img} 
+                alt={activeArea.title} 
+                className="modal-img" 
+              />
             </motion.div>
           </motion.div>
         )}

@@ -9,6 +9,43 @@
   overflow: hidden;
 }
 
+/* التنسيق المخصص للمناطق الكبيرة (مثل رقم 4) */
+.large-modal {
+  /* نحدد أقصى ارتفاع مسموح به لكي لا تخرج عن الشاشة */
+  max-height: 85vh; 
+  width: 95% !important; /* تأخذ عرض الشاشة بالكامل تقريباً */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.large-modal .modal-img {
+  /* السر هنا: تجعل الصورة تتناسب مع الطول المتاح دون تشويه */
+  max-height: 80vh; 
+  object-fit: contain; 
+  background-color: transparent;
+  box-shadow: none; /* لإزالة أي ظلال قد تظهر كحدود سوداء */
+}
+
+/* تعديل موقع الـ X ليكون بارزاً ومضمون الظهور في الصور الكبيرة */
+.large-modal .close-btn {
+  top: -10px; /* تقريب الزر قليلاً لضمان عدم خروجه عن سقف المتصفح */
+  right: 0px;
+  width: 45px;
+  height: 45px;
+  background-color: #ff0000;
+  border: 3px solid white;
+  font-weight: 900;
+  z-index: 1000;
+}
+
+/* لضمان السنترة في الشاشات العريضة (Landscape) */
+@media screen and (orientation: landscape) {
+  .large-modal {
+    max-width: 600px; /* تحديد عرض مناسب لكي لا تصبح الصورة ضخمة جداً */
+  }
+}
+
 .map-wrapper {
   position: relative;
   width: 100vw;
@@ -133,18 +170,19 @@
   z-index: 120;
   transition: all 0.2s ease-in-out;
 }
-
-.close-btn:hover {
-  transform: scale(1.1);
-  background-color: #e60000;
-}
-
 .modal-img {
   width: 100%;
   height: auto;
   border-radius: 20px;
   display: block;
 }
+
+.close-btn:hover {
+  transform: scale(1.1);
+  background-color: #e60000;
+}
+
+
 /* إخفاء أي نصوص إضافية إذا كانت الصورة تحتوي على النص بالفعل */
 .modal h2, .modal p {
   display: none; 

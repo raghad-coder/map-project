@@ -41,7 +41,7 @@ function App() {
               key={activeArea.id} 
               
               /* كلاس مخصص للمنطقة 4 إذا كانت أكبر من الشاشة */
-              className={`modal ${activeArea.id === 1 ? 'large-modal' : ''}`}
+              className={`modal ${activeArea.id === 1 ? 'special-case' : ''}`}
               
               initial={{ scale: 0.7, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}

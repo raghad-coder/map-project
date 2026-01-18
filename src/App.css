@@ -101,22 +101,24 @@
   background: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
-  align-items: center; /* سنترة المودال في نصف الشاشة بالضبط مهما كان طول الهاتف */
+  align-items: center; /* سنترة عمودية دقيقة */
   z-index: 2000;
-  backdrop-filter: blur(10px);
-  padding: 20px; /* مسافة أمان من حواف الهاتف */
+  backdrop-filter: blur(8px);
+  padding: 15px; /* مسافة أمان من حواف الشاشة */
 }
+
 /* تنسيق المودال (البطاقة الملونة فقط) */
 /* تنسيق المودال - تأكدي من إضافة overflow: visible */
 .modal {
   max-height: 70vh; /* ضمان عدم خروج الصورة عن سقف الشاشة */
   object-fit: contain;
   position: relative;
-  width: 90%;
-  max-width: 450px;
+  width: 100%;
+  max-width: 420px;
   border-radius: 20px;
   background-color: transparent; /* لكي يظهر الجزء الملون فقط */
-  overflow: visible; /* هام جداً لكي يبرز الزر خارج الحواف */
+  align-items: center;
+  overflow: visible !important;/* هام جداً لكي يبرز الزر خارج الحواف */
   display: flex;
   flex-direction: column;
 }

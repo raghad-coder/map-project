@@ -1,42 +1,23 @@
 #root {
   width: 100%;
-  height: 100vh;
-  background-color: #2c1a4d;
-  margin: 0;
+  height: 100dvh; /* dvh تعني الارتفاع الحقيقي للشاشة حتى مع وجود شريط المتصفح */
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #2c1a4d;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
+  touch-action: manipulation; /* تحسين استجابة اللمس */
 }
 
-/* التنسيق المخصص للمناطق الكبيرة (مثل رقم 4) */
-.large-modal {
-  /* نحدد أقصى ارتفاع مسموح به لكي لا تخرج عن الشاشة */
-  max-height: 85vh; 
-  width: 95% !important; /* تأخذ عرض الشاشة بالكامل تقريباً */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.large-modal .modal-img {
-  /* السر هنا: تجعل الصورة تتناسب مع الطول المتاح دون تشويه */
-  max-height: 80vh; 
-  object-fit: contain; 
-  background-color: transparent;
-  box-shadow: none; /* لإزالة أي ظلال قد تظهر كحدود سوداء */
-}
-
-/* تعديل موقع الـ X ليكون بارزاً ومضمون الظهور في الصور الكبيرة */
-.large-modal .close-btn {
-  top: -10px; /* تقريب الزر قليلاً لضمان عدم خروجه عن سقف المتصفح */
-  right: 0px;
-  width: 45px;
-  height: 45px;
-  background-color: #ff0000;
-  border: 3px solid white;
-  font-weight: 900;
-  z-index: 1000;
+/* تحسين الخريطة لتكون متجاوبة */
+.map-wrapper {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  transition: transform 0.4s ease-in-out;
 }
 
 /* لضمان السنترة في الشاشات العريضة (Landscape) */
@@ -96,13 +77,17 @@
 }
 
 /* التدوير التلقائي في الموبايل */
-@media screen and (orientation: portrait) {
+@media screen and (max-width: 768px) and (orientation: portrait) {
   .map-wrapper {
     transform: rotate(90deg);
     width: 90vh; /* تصبح العرض هو الطول */
   }
   .marker {
-    transform: translate(-50%, -50%) rotate(-90deg); /* تعديل اتجاه الرقم ليكون مقروءاً */
+    /* تصغير حجم النقاط قليلاً في الموبايل لتناسب المساحة */
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 12px !important;
+    transform: translate(-50%, -50%) rotate(-90deg) !important;
   }
 }
 
@@ -113,17 +98,19 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
-  justify-content: center; /* توسيط أفقي */
-  align-items: center;    /* توسيط عمودي */
-  z-index: 100;
-  backdrop-filter: blur(8px);
+  justify-content: center;
+  align-items: center; /* سنترة المودال في نصف الشاشة بالضبط مهما كان طول الهاتف */
+  z-index: 2000;
+  backdrop-filter: blur(10px);
+  padding: 20px; /* مسافة أمان من حواف الهاتف */
 }
-
 /* تنسيق المودال (البطاقة الملونة فقط) */
 /* تنسيق المودال - تأكدي من إضافة overflow: visible */
 .modal {
+  max-height: 70vh; /* ضمان عدم خروج الصورة عن سقف الشاشة */
+  object-fit: contain;
   position: relative;
   width: 90%;
   max-width: 450px;
@@ -172,6 +159,8 @@
 }
 .modal-img {
   width: 100%;
+  max-height: 70vh; /* ضمان عدم خروج الصورة عن سقف الشاشة */
+  object-fit: contain;
   height: auto;
   border-radius: 20px;
   display: block;

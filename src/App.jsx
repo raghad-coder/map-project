@@ -5,47 +5,46 @@ import './App.css';
 
 function App() {
   const [activeArea, setActiveArea] = useState(null);
-  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [isFS, setIsFS] = useState(false);
 
-  // تحميل الصور مسبقاً لمنع التأخير (Fixes the lag issue)
-  useEffect(() => {
-    areaData.forEach((area) => {
-      const img = new Image();
-      img.src = area.img;
-    });
-  }, []);
-
-  const handleStart = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().then(() => {
-        setIsFullScreen(true);
-      });
-    } else {
-      document.exitFullscreen();
-      setIsFullScreen(false);
+  // دالة تفعيل ملء الشاشة الحقيقي
+  const enterFullScreen = () => {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { /* Safari */
+      elem.webkitRequestFullscreen();
     }
+    setIsFS(true);
   };
 
-  // متابعة حالة الفول سكرين لو المستخدم خرج بزر الرجوع
+  // متابعة الخروج من Fullscreen (عبر زر الرجوع مثلاً)
   useEffect(() => {
-    const handler = () => {
-      if (!document.fullscreenElement) setIsFullScreen(false);
+    const checkFS = () => {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        setIsFS(false);
+      }
     };
-    document.addEventListener('fullscreenchange', handler);
-    return () => document.removeEventListener('fullscreenchange', handler);
+    document.addEventListener('fullscreenchange', checkFS);
+    document.addEventListener('webkitfullscreenchange', checkFS);
+    return () => {
+      document.removeEventListener('fullscreenchange', checkFS);
+      document.removeEventListener('webkitfullscreenchange', checkFS);
+    };
   }, []);
 
   return (
-    <div className={`container ${isFullScreen ? 'force-view' : ''}`}>
+    <div className={`app-container ${isFS ? 'fullscreen-mode' : ''}`}>
       
-      {!isFullScreen && (
-        <button className="start-btn" onClick={handleStart}>
-          عرض الخريطة كاملة ⛶
+      {!isFS && (
+        <button className="fs-trigger" onClick={enterFullScreen}>
+          اضغط هنا لتفعيل الخريطة ⛶
         </button>
       )}
 
       <div className="map-wrapper">
         <img src="/map.png" alt="Map" className="main-map" />
+        
         {areaData.map((item) => (
           <div 
             key={item.id} 
@@ -62,13 +61,14 @@ function App() {
         {activeArea && (
           <motion.div className="overlay" onClick={() => setActiveArea(null)}>
             <motion.div 
-              className="modal"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
+              className="modal-card"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
             >
-              <button className="close-btn" onClick={() => setActiveArea(null)}>&times;</button>
-              <img src={activeArea.img} className="modal-img" alt="Area" />
+              <button className="close-x" onClick={() => setActiveArea(null)}>&times;</button>
+              <img src={activeArea.img} className="modal-content-img" alt="Content" />
             </motion.div>
           </motion.div>
         )}

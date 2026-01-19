@@ -1,37 +1,57 @@
-/* الأساسيات */
-#root, .container {
+/* 1. إعدادات الحاوية الكبرى لضمان ملء الشاشة الحقيقي */
+#root, .app-container {
   width: 100vw;
-  height: 100dvh;
+  height: 100dvh; /* استخدام dvh لضمان الطول الصافي بدون شريط المتصفح */
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #2c1a4d;
-  overflow: hidden;
   margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
 }
 
-/* حاوية الخريطة: نثبت أبعادها لتناسب أغلب الموبايلات */
+/* 2. زر بدء التجربة (يظهر فقط قبل تفعيل الفول سكرين) */
+.fs-trigger {
+  position: absolute;
+  z-index: 500;
+  padding: 15px 30px;
+  background: #2ecc71;
+  color: white;
+  border: 2px solid white;
+  border-radius: 50px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+}
+
+/* 3. حاوية الخريطة: السر في ثبات الأرقام هو الحفاظ على نسبة الأبعاد */
 .map-wrapper {
   position: relative;
   width: 95vw;
-  max-width: 800px;
-  /* نحافظ على نسبة أبعاد الصورة الأصلية (تقريبياً 4:3) */
-  aspect-ratio: 4 / 3; 
-  transition: transform 0.5s ease-in-out;
+  max-width: 900px;
+  /* ملاحظة: تأكدي أن هذه النسبة تطابق أبعاد صورتك الأصلية لضمان دقة الأرقام */
+  aspect-ratio: 16 / 9; 
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .main-map {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* يضمن عدم تمطيط الخريطة وبالتالي ثبات الأرقام */
+  object-fit: contain; /* يضمن عدم تمطيط الخريطة أبداً */
   display: block;
+  border-radius: 8px;
 }
 
-/* الأرقام (Markers) */
+/* 4. تصميم النقاط (Markers) */
 .marker {
   position: absolute;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   background: #2ecc71;
   color: white;
   border-radius: 50%;
@@ -39,38 +59,47 @@
   justify-content: center;
   align-items: center;
   font-weight: bold;
+  font-size: 14px;
   border: 2px solid white;
-  transform: translate(-50%, -50%);
+  /* السنترة المطلقة تضمن عدم تحرك الرقم عند تغيير الحجم */
+  transform: translate(-50%, -50%); 
   z-index: 10;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
-/* وضع الدوران الإجباري للموبايل */
-@media screen and (max-width: 768px) and (orientation: portrait) {
-  /* نلف الحاوية بالكامل ككتلة واحدة */
-  .force-view .map-wrapper {
+/* 5. وضع ملء الشاشة والدوران (Fullscreen Mode) */
+@media screen and (max-width: 768px) {
+  /* عندما يأخذ الأب كلاس fullscreen-mode */
+  .fullscreen-mode .map-wrapper {
+    position: absolute;
+    /* دوران الخريطة 90 درجة */
     transform: rotate(90deg);
-    /* نستخدم vh كعرض لأن الموبايل مقلوب */
-    width: 90dvh !important; 
+    /* العرض يصبح هو طول الشاشة المتاح مع خصم مساحة بسيطة للبادنج */
+    width: calc(100dvh - 20px) !important; 
+    height: auto !important;
   }
 
-  /* نعدل الأرقام لتكون باصة للمستخدم */
-  .force-view .marker {
+  /* تدوير الأرقام عكسياً لتظل معدولة أمام عين المستخدم */
+  .fullscreen-mode .marker {
     transform: translate(-50%, -50%) rotate(-90deg) !important;
   }
 
-  /* المودال يلف مع الخريطة */
-  .force-view .modal {
+  /* 6. المودال (البوب أب): يجب أن يلف بنفس اتجاه الخريطة */
+  .fullscreen-mode .modal-card {
     transform: rotate(90deg);
-    width: 80dvh !important;
-    max-width: 90vw !important;
+    /* يضمن عدم قص الصورة الفرعية وظهورها بالكامل */
+    width: calc(100dvh - 80px) !important;
+    max-width: 85vw !important;
   }
 
-  .force-view .close-btn {
+  /* تدوير زر الإغلاق X */
+  .fullscreen-mode .close-x {
     transform: rotate(-90deg);
   }
 }
 
-/* تنسيقات المودال */
+/* 7. تنسيقات المودال والـ Overlay */
 .overlay {
   position: fixed;
   inset: 0;
@@ -79,47 +108,46 @@
   justify-content: center;
   align-items: center;
   z-index: 9999;
+  backdrop-filter: blur(5px);
 }
 
-.modal {
+.modal-card {
   position: relative;
+  background: transparent;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.modal-img {
+.modal-content-img {
   width: 100%;
   max-height: 80vh;
-  object-fit: contain;
+  object-fit: contain; /* يضمن ظهور كامل الصورة بدون قص */
   border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.8);
 }
 
-.close-btn {
+.close-x {
   position: absolute;
   top: -20px;
   right: -10px;
-  width: 40px;
-  height: 40px;
-  background: red;
+  width: 44px;
+  height: 44px;
+  background: #ff0000;
   color: white;
   border-radius: 50%;
-  border: 2px solid white;
-  font-size: 24px;
+  border: 3px solid white;
+  font-size: 28px;
+  font-weight: bold;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  z-index: 10000;
 }
 
-/* زر ملء الشاشة */
-.start-btn {
-  position: fixed;
-  bottom: 20px;
-  z-index: 5000;
-  padding: 10px 20px;
-  background: #2ecc71;
-  color: white;
-  border-radius: 5px;
-  border: none;
-  font-weight: bold;
+/* حالة خاصة إذا كانت الصورة رقم 1 أو 6 تحتاج تعديل */
+.special-case .modal-content-img {
+  border: 2px solid #2ecc71;
 }

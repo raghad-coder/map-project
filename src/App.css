@@ -1,4 +1,4 @@
-/* 1. الإعدادات العامة */
+/* 1. إعدادات الحاوية الكبرى */
 #root, .container {
   width: 100%;
   height: 100dvh;
@@ -11,13 +11,16 @@
   overflow: hidden;
 }
 
-/* 2. حاوية الخريطة - (الوضع الطبيعي) */
+/* 2. حاوية الخريطة - (ثبات النسبة هو أهم شيء هنا) */
 .map-wrapper {
   position: relative;
-  width: 100%;
+  width: 95vw;
   max-width: 1000px;
   /* الانتقال السلس للحركة */
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.5s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .main-map {
@@ -27,7 +30,7 @@
   border-radius: 8px;
 }
 
-/* 3. تصميم النقاط (Markers) */
+/* 3. النقاط (Markers) - لن تتحرك من مكانها أبداً */
 .marker {
   position: absolute;
   width: 32px;
@@ -41,41 +44,39 @@
   font-weight: bold;
   cursor: pointer;
   border: 2px solid white;
-  /* السنترة مهمة جداً لثبات المكان */
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%); /* لضمان الدقة العالية */
   z-index: 10;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
-/* ====================================================== */
-/* وضع الـ Force Rotate & Fullscreen (للموبايل فقط) */
-/* ====================================================== */
-
+/* 4. وضع الـ Force Fullscreen (الحل الحقيقي للفيديو) */
 @media screen and (max-width: 768px) and (orientation: portrait) {
-  /* عندما يتم تفعيل الكلاس force-view */
+  
   .force-view .map-wrapper {
     position: fixed;
+    /* السنترة المطلقة في وسط الشاشة */
     top: 50%;
     left: 50%;
     
-    /* الدوران والسنترة في نفس الأمر */
+    /* الدوران والسنترة معاً */
     transform: translate(-50%, -50%) rotate(90deg);
     
-    /* هنا السر: العرض الحقيقي للخريطة الملتفة هو طول الشاشة 
-       مع ترك مساحة أمان 20px لمنع القص من الأطراف */
-    width: calc(100dvh - 20px);
+    /* السر هنا: نحدد العرض فقط لضمان بقاء النسبة ثابتة (aspect-ratio) */
+    /* خصمنا 60px لضمان وجود بادنج من الأعلى والأسفل (العنوان لن يقص) */
+    width: calc(100dvh - 60px) !important; 
+    height: auto !important; 
     
-    /* لا نحدد الارتفاع (height) لنترك الخريطة تحافظ على أبعادها الأصلية 
-       وبالتالي تظل الأرقام في مكانها الصحيح */
-    height: auto;
+    /* نضمن أن عرض الخريطة بعد اللف لا يتجاوز عرض الموبايل */
+    max-height: 90vw; 
   }
 
-  /* عدلة الأرقام لتظل معدولة للمستخدم بعد الدوران */
+  /* عدلة الأرقام لتظل معدولة للمستخدم */
   .force-view .marker {
     transform: translate(-50%, -50%) rotate(-90deg) !important;
   }
 }
 
-/* 4. تنسيق البوب أب (Modal) لضمان عدم القص */
+/* 5. تنسيق المودال (البوب أب) */
 .overlay {
   position: fixed;
   inset: 0;
@@ -94,13 +95,12 @@
   align-items: center;
 }
 
-/* في وضع الـ Portrait نلف المودال بنفس الطريقة */
+/* تدوير المودال ليتناسب مع عدلة الخريطة */
 @media screen and (max-width: 768px) and (orientation: portrait) {
   .force-view .modal {
     transform: rotate(90deg);
-    /* نجعله يملأ المساحة المتاحة دون خروج */
     width: 80dvh !important;
-    max-width: 90vw !important;
+    max-width: 85vw !important;
   }
   
   .force-view .close-btn {
@@ -130,6 +130,7 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  z-index: 9999;
 }
 
 /* زر البدء */
@@ -137,10 +138,10 @@
   position: fixed;
   bottom: 20px;
   z-index: 5000;
-  padding: 10px 20px;
+  padding: 12px 24px;
   background: #2ecc71;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 50px;
   font-weight: bold;
 }

@@ -171,7 +171,7 @@
 .content-img {
   width: auto; /* العرض تلقائي */
   height: auto; /* الطول تلقائي */
-  max-width: 80vh;
+  max-width: 100%;
   max-height: 80vh; /* نضمن إنها متطولش أوي */
   object-fit: contain; /* تظهر كاملة بدون قص */
   border-radius: 15px; /* حواف ناعمة للصورة المستطيلة */

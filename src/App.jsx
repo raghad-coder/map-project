@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { areaData } from './data';
 import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
@@ -7,13 +7,18 @@ function App() {
   const [activeArea, setActiveArea] = useState(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
 
-  const handleStartExperience = () => {
-    // 1. تفعيل ملء الشاشة
+  // تحميل الصور مسبقاً لمنع التأخير (Fixes the lag issue)
+  useEffect(() => {
+    areaData.forEach((area) => {
+      const img = new Image();
+      img.src = area.img;
+    });
+  }, []);
+
+  const handleStart = () => {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen().then(() => {
         setIsFullScreen(true);
-      }).catch((e) => {
-        console.error("Fullscreen error:", e);
       });
     } else {
       document.exitFullscreen();
@@ -21,24 +26,26 @@ function App() {
     }
   };
 
-  // مراقبة خروج المستخدم من الفول سكرين بزر الرجوع في الموبايل
-  document.onfullscreenchange = () => {
-    if (!document.fullscreenElement) setIsFullScreen(false);
-  };
+  // متابعة حالة الفول سكرين لو المستخدم خرج بزر الرجوع
+  useEffect(() => {
+    const handler = () => {
+      if (!document.fullscreenElement) setIsFullScreen(false);
+    };
+    document.addEventListener('fullscreenchange', handler);
+    return () => document.removeEventListener('fullscreenchange', handler);
+  }, []);
 
   return (
-    // الكلاس "force-view" سيتم تفعيله فقط عند الضغط على الزر
     <div className={`container ${isFullScreen ? 'force-view' : ''}`}>
       
       {!isFullScreen && (
-        <button className="start-btn" onClick={handleStartExperience}>
-          عرض الخريطة بالكامل ⛶
+        <button className="start-btn" onClick={handleStart}>
+          عرض الخريطة كاملة ⛶
         </button>
       )}
 
       <div className="map-wrapper">
         <img src="/map.png" alt="Map" className="main-map" />
-        
         {areaData.map((item) => (
           <div 
             key={item.id} 
@@ -56,8 +63,8 @@ function App() {
           <motion.div className="overlay" onClick={() => setActiveArea(null)}>
             <motion.div 
               className="modal"
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
               onClick={(e) => e.stopPropagation()}
             >
               <button className="close-btn" onClick={() => setActiveArea(null)}>&times;</button>

@@ -1,36 +1,37 @@
-/* 1. الإعدادات الأساسية */
+/* الأساسيات */
 #root, .container {
-  width: 100%;
+  width: 100vw;
   height: 100dvh;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #2c1a4d;
-  margin: 0;
-  padding: 0;
   overflow: hidden;
+  margin: 0;
 }
 
-/* 2. حاوية الخريطة - (الأرقام مرتبطة بها لذا يجب أن تتبع أبعاد الصورة تماماً) */
+/* حاوية الخريطة: نثبت أبعادها لتناسب أغلب الموبايلات */
 .map-wrapper {
   position: relative;
   width: 95vw;
-  max-width: 1000px;
-  transition: transform 0.5s ease-in-out, width 0.5s ease-in-out;
+  max-width: 800px;
+  /* نحافظ على نسبة أبعاد الصورة الأصلية (تقريبياً 4:3) */
+  aspect-ratio: 4 / 3; 
+  transition: transform 0.5s ease-in-out;
 }
 
 .main-map {
   width: 100%;
-  height: auto; /* لضمان عدم تمطيط الصورة وثبات الأرقام */
+  height: 100%;
+  object-fit: contain; /* يضمن عدم تمطيط الخريطة وبالتالي ثبات الأرقام */
   display: block;
-  border-radius: 12px;
 }
 
-/* 3. تصميم النقاط (Markers) */
+/* الأرقام (Markers) */
 .marker {
   position: absolute;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   background: #2ecc71;
   color: white;
   border-radius: 50%;
@@ -38,49 +39,38 @@
   justify-content: center;
   align-items: center;
   font-weight: bold;
-  cursor: pointer;
   border: 2px solid white;
-  transform: translate(-50%, -50%); /* السنترة المطلقة لثبات الموقع */
+  transform: translate(-50%, -50%);
   z-index: 10;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
-/* ====================================================== */
-/* وضع الـ Force Fullscreen (الإصلاح الجذري للفيديو) */
-/* ====================================================== */
-
+/* وضع الدوران الإجباري للموبايل */
 @media screen and (max-width: 768px) and (orientation: portrait) {
-  /* عندما يتم تفعيل الكلاس force-view عبر زر Fullscreen */
+  /* نلف الحاوية بالكامل ككتلة واحدة */
   .force-view .map-wrapper {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    
-    /* الدوران والسنترة في أمر واحد لضمان عدم الانزياح */
-    transform: translate(-50%, -50%) rotate(90deg);
-    
-    /* العرض هنا يمثل طول الخريطة بعد الدوران */
-    /* نستخدم 88dvh لنترك مساحة أمان كافية تمنع قص العنوان (خريطة حفلنا) */
-    width: 88dvh !important; 
-    
-    /* نترك الارتفاع تلقائي لكي تحافظ الحاوية على نسبة أبعاد الصورة 
-       وهذا هو السر في عدم تداخل الأرقام أو تحركها من مكانها */
-    height: auto !important; 
-    
-    /* نضمن أن الخريطة لا تخرج عن عرض الشاشة (الجوانب) */
-    max-height: 92vw; 
+    transform: rotate(90deg);
+    /* نستخدم vh كعرض لأن الموبايل مقلوب */
+    width: 90dvh !important; 
   }
 
-  /* عدلة الأرقام لتظل معدولة للمستخدم بعد الدوران */
+  /* نعدل الأرقام لتكون باصة للمستخدم */
   .force-view .marker {
     transform: translate(-50%, -50%) rotate(-90deg) !important;
-    width: 28px;
-    height: 28px;
-    font-size: 13px;
+  }
+
+  /* المودال يلف مع الخريطة */
+  .force-view .modal {
+    transform: rotate(90deg);
+    width: 80dvh !important;
+    max-width: 90vw !important;
+  }
+
+  .force-view .close-btn {
+    transform: rotate(-90deg);
   }
 }
 
-/* 4. تنسيق المودال (البوب أب) لضمان عدم القص */
+/* تنسيقات المودال */
 .overlay {
   position: fixed;
   inset: 0;
@@ -88,65 +78,48 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9000;
-  backdrop-filter: blur(8px);
+  z-index: 9999;
 }
 
 .modal {
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 90%;
-  max-width: 400px;
-}
-
-@media screen and (max-width: 768px) and (orientation: portrait) {
-  .force-view .modal {
-    transform: rotate(90deg);
-    /* المودال أيضاً يلتزم بطول الشاشة المتاح */
-    width: 75dvh !important;
-    max-width: 85vw !important;
-  }
-  
-  .force-view .close-btn {
-    transform: rotate(-90deg);
-  }
 }
 
 .modal-img {
   width: 100%;
   max-height: 80vh;
   object-fit: contain;
-  border-radius: 20px;
+  border-radius: 15px;
 }
 
 .close-btn {
   position: absolute;
   top: -20px;
   right: -10px;
-  width: 42px;
-  height: 42px;
-  background: #ff0000;
+  width: 40px;
+  height: 40px;
+  background: red;
   color: white;
   border-radius: 50%;
-  border: 3px solid white;
-  font-size: 26px;
+  border: 2px solid white;
+  font-size: 24px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
 }
 
-/* زر البدء (Fullscreen) */
+/* زر ملء الشاشة */
 .start-btn {
   position: fixed;
   bottom: 20px;
   z-index: 5000;
-  padding: 12px 24px;
+  padding: 10px 20px;
   background: #2ecc71;
   color: white;
-  border: 2px solid white;
-  border-radius: 50px;
+  border-radius: 5px;
+  border: none;
   font-weight: bold;
 }

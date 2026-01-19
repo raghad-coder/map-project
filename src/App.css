@@ -50,8 +50,8 @@
 /* تحديث تصميم النقاط في App.css */
 .map-marker {
   position: absolute;
-  width: 32px;
-  height: 32px;
+  width: 22px;
+  height: 22px;
   background: #2ecc71; /* اللون الأخضر كما في الصورة */
   color: white;
   border-radius: 50%;
@@ -59,7 +59,7 @@
   justify-content: center;
   align-items: center;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 11px;
   border: 2px solid white;
   
   /* السنترة المطلقة لضمان الدقة */
@@ -171,7 +171,7 @@
 .content-img {
   width: auto; /* العرض تلقائي */
   height: auto; /* الطول تلقائي */
-  max-width: 100%;
+  max-width: 80vh;
   max-height: 80vh; /* نضمن إنها متطولش أوي */
   object-fit: contain; /* تظهر كاملة بدون قص */
   border-radius: 15px; /* حواف ناعمة للصورة المستطيلة */

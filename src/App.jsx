@@ -42,27 +42,27 @@ function App() {
   }, []);
 
   return (
-    <div className={`app-holder ${isFS ? 'rotated-mode' : ''}`}>
-      
-      {!isFS && (
-        <button className="start-btn" onClick={handleStart}>
-          تفعيل الخريطة الذكية ⛶
-        </button>
-      )}
+    <div className="app-holder"> {/* حذفنا الشرط الخاص بـ rotated-mode */}
+    
+    {!isFS && (
+      <button className="start-btn" onClick={handleStart}>
+        تفعيل الخريطة الذكية ⛶
+      </button>
+    )}
 
-      <div className="map-box">
-        <img src="/map.png" alt="Map" className="map-img" />
-        {areaData.map((item) => (
-          <div 
-            key={item.id} 
-            className="map-marker" 
-            style={{ top: item.top, left: item.left }}
-            onClick={() => setActiveArea(item)}
-          >
-            {item.id}
-          </div>
-        ))}
-      </div>
+    <div className="map-box">
+      <img src="/map.png" alt="Map" className="map-img" />
+      {areaData.map((item) => (
+        <div 
+          key={item.id} 
+          className="map-marker" 
+          style={{ top: item.top, left: item.left }}
+          onClick={() => setActiveArea(item)}
+        >
+          {item.id}
+        </div>
+      ))}
+    </div>
 
       <AnimatePresence>
         {activeArea && (

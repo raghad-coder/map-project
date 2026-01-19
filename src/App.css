@@ -30,48 +30,61 @@
 }
 
 /* 3. حاوية الخريطة: السر في ثبات الأرقام */
+/* تأكدي أن هذه الإعدادات موجودة في App.css */
+
 .map-box {
   position: relative;
-  width: 95vw;
+  width: 95vw; /* العرض الطبيعي */
   max-width: 900px;
-  /* الانتقال السلس يمنع القفز المفاجئ للأرقام */
-  transition: all 0.6s ease-in-out;
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all 0.3s ease;
 }
 
 .map-img {
   width: 100%;
   height: auto;
-  display: block;
   border-radius: 12px;
+  display: block;
 }
-/* تحديث تصميم النقاط في App.css */
+
+/* تأكدي أن العلامات (Markers) ليس لها تدوير عكسي */
 .map-marker {
   position: absolute;
-  width: 22px;
-  height: 22px;
-  background: #2ecc71; /* اللون الأخضر كما في الصورة */
+  width: 24px;
+  height: 24px;
+  background: #2ecc71;
   color: white;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: bold;
   font-size: 11px;
-  border: 2px solid white;
-  
-  /* السنترة المطلقة لضمان الدقة */
-  transform: translate(-50%, -50%); 
+  font-weight: bold;
+  border: 1.5px solid white;
+  transform: translate(-50%, -50%); /* سنترة فقط بدون rotate */
   z-index: 10;
-  cursor: pointer;
-
-  /* إضافة تأثير التوهج */
-  box-shadow: 0 0 10px rgba(46, 204, 113, 0.7);
-  animation: marker-pulse 2s infinite ease-in-out;
 }
 
+/* تنسيق المودال في الوضع الطبيعي */
+.modal-body {
+  position: relative;
+  width: 90%;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.content-img {
+  width: 100%;
+  height: auto;
+  max-height: 75vh;
+  object-fit: contain;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
 /* حركة التوهج والنبط */
 @keyframes marker-pulse {
   0%, 100% {
@@ -100,44 +113,6 @@
 /* وضع الدوران (Rotated Fullscreen Mode) */
 /* ====================================================== */
 
-@media screen and (max-width: 768px) {
-  /* عندما يتم تفعيل الكلاس عبر JavaScript */
-  .rotated-mode .map-box {
-    position: absolute;
-    /* دوران الخريطة 90 درجة لتملأ طول الشاشة */
-    transform: rotate(90deg);
-    
-    /* العرض هنا هو طول الشاشة، نستخدم calc لترك مسافة أمان (Padding) تمنع القص */
-    width: calc(100dvh - 40px) !important; 
-    
-    /* نترك الارتفاع auto ليتبع نسبة الصورة الأصلية وبذلك تظل الأرقام ثابتة */
-    height: auto !important; 
-    
-    transform-origin: center center;
-  }
-
-  /* تدوير الأرقام عكسياً (-90) لتظهر معدولة أمام عين المستخدم */
-  .rotated-mode .map-marker {
-    transform: translate(-50%, -50%) rotate(-90deg) !important;
-  }
-
-  /* 5. المودال (الصور والرسائل): تدويرها لتناسب اتجاه الخريطة المقلوبة */
-  .rotated-mode .modal-overlay {
-    /* الـ overlay يظل ثابتاً، التدوير يكون للمحتوى فقط */
-  }
-
-  .rotated-mode .modal-body {
-    transform: rotate(90deg);
-    /* نضمن أن الصورة تظهر كاملة بدون قص الأطراف */
-    width: calc(100dvh - 80px) !important;
-    max-width: 85vw !important;
-  }
-
-  /* تدوير زر الإغلاق X عكسياً ليكون معدولاً */
-  .rotated-mode .btn-close {
-    transform: rotate(-90deg);
-  }
-}
 
 /* 6. تنسيقات المودال والـ Overlay */
 .modal-overlay {

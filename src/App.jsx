@@ -7,48 +7,55 @@ function App() {
   const [activeArea, setActiveArea] = useState(null);
   const [isFS, setIsFS] = useState(false);
 
-  // دالة تفعيل ملء الشاشة الحقيقي
-  const enterFullScreen = () => {
+  // 1. تحميل الصور مسبقاً لمنع التأخير عند فتح المودال
+  useEffect(() => {
+    areaData.forEach((area) => {
+      const img = new Image();
+      img.src = area.img;
+    });
+  }, []);
+
+  // 2. دالة ملء الشاشة والدوران
+  const handleStart = () => {
     const elem = document.documentElement;
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) { /* Safari */
-      elem.webkitRequestFullscreen();
+    if (!document.fullscreenElement) {
+      if (elem.requestFullscreen) elem.requestFullscreen();
+      else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen(); // Safari
+      setIsFS(true);
+    } else {
+      if (document.exitFullscreen) document.exitFullscreen();
+      setIsFS(false);
     }
-    setIsFS(true);
   };
 
-  // متابعة الخروج من Fullscreen (عبر زر الرجوع مثلاً)
+  // متابعة حالة الشاشة (لو المستخدم خرج بالزر الفعلي للموبايل)
   useEffect(() => {
-    const checkFS = () => {
-      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-        setIsFS(false);
-      }
+    const fsChange = () => {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) setIsFS(false);
     };
-    document.addEventListener('fullscreenchange', checkFS);
-    document.addEventListener('webkitfullscreenchange', checkFS);
+    document.addEventListener('fullscreenchange', fsChange);
+    document.addEventListener('webkitfullscreenchange', fsChange);
     return () => {
-      document.removeEventListener('fullscreenchange', checkFS);
-      document.removeEventListener('webkitfullscreenchange', checkFS);
+      document.removeEventListener('fullscreenchange', fsChange);
+      document.removeEventListener('webkitfullscreenchange', fsChange);
     };
   }, []);
 
   return (
-    <div className={`app-container ${isFS ? 'fullscreen-mode' : ''}`}>
+    <div className={`app-holder ${isFS ? 'rotated-mode' : ''}`}>
       
       {!isFS && (
-        <button className="fs-trigger" onClick={enterFullScreen}>
-          اضغط هنا لتفعيل الخريطة ⛶
+        <button className="start-btn" onClick={handleStart}>
+          تفعيل الخريطة الذكية ⛶
         </button>
       )}
 
-      <div className="map-wrapper">
-        <img src="/map.png" alt="Map" className="main-map" />
-        
+      <div className="map-box">
+        <img src="/map.png" alt="Map" className="map-img" />
         {areaData.map((item) => (
           <div 
             key={item.id} 
-            className="marker" 
+            className="map-marker" 
             style={{ top: item.top, left: item.left }}
             onClick={() => setActiveArea(item)}
           >
@@ -59,16 +66,16 @@ function App() {
 
       <AnimatePresence>
         {activeArea && (
-          <motion.div className="overlay" onClick={() => setActiveArea(null)}>
+          <motion.div className="modal-overlay" onClick={() => setActiveArea(null)}>
             <motion.div 
-              className="modal-card"
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
+              className="modal-body"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
               onClick={(e) => e.stopPropagation()}
             >
-              <button className="close-x" onClick={() => setActiveArea(null)}>&times;</button>
-              <img src={activeArea.img} className="modal-content-img" alt="Content" />
+              <button className="btn-close" onClick={() => setActiveArea(null)}>&times;</button>
+              <img src={activeArea.img} className="content-img" alt="Area info" />
             </motion.div>
           </motion.div>
         )}

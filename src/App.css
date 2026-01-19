@@ -1,7 +1,7 @@
-/* 1. إعدادات الحاوية الكبرى لضمان ملء الشاشة الحقيقي */
+/* 1. إعدادات الحاوية الكبرى لضمان ملء الشاشة الصافي */
 #root, .app-container {
   width: 100vw;
-  height: 100dvh; /* استخدام dvh لضمان الطول الصافي بدون شريط المتصفح */
+  height: 100dvh; /* dvh تضمن عدم وجود فراغ بسبب شريط المتصفح */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,10 +12,10 @@
   position: relative;
 }
 
-/* 2. زر بدء التجربة (يظهر فقط قبل تفعيل الفول سكرين) */
+/* 2. زر تفعيل الخريطة (يظهر في البداية فقط) */
 .fs-trigger {
   position: absolute;
-  z-index: 500;
+  z-index: 1000;
   padding: 15px 30px;
   background: #2ecc71;
   color: white;
@@ -26,32 +26,28 @@
   box-shadow: 0 5px 20px rgba(0,0,0,0.5);
 }
 
-/* 3. حاوية الخريطة: السر في ثبات الأرقام هو الحفاظ على نسبة الأبعاد */
+/* 3. حاوية الخريطة: السر في ثبات الأرقام هو الحفاظ على نسبة العرض للطول */
 .map-wrapper {
   position: relative;
+  /* نحدد العرض فقط وترك الارتفاع تلقائي ليتبع الصورة وتظل الأرقام ثابتة */
   width: 95vw;
-  max-width: 900px;
-  /* ملاحظة: تأكدي أن هذه النسبة تطابق أبعاد صورتك الأصلية لضمان دقة الأرقام */
-  aspect-ratio: 16 / 9; 
+  max-width: 900px; 
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: inline-block; /* تضمن انكماش الحاوية على حجم الصورة بالضبط */
 }
 
 .main-map {
   width: 100%;
-  height: 100%;
-  object-fit: contain; /* يضمن عدم تمطيط الخريطة أبداً */
+  height: auto;
   display: block;
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
-/* 4. تصميم النقاط (Markers) */
+/* 4. تصميم النقاط (Markers) - ستظل ثابتة لأن الحاوية تتبع أبعاد الصورة */
 .marker {
   position: absolute;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   background: #2ecc71;
   color: white;
   border-radius: 50%;
@@ -61,39 +57,39 @@
   font-weight: bold;
   font-size: 14px;
   border: 2px solid white;
-  /* السنترة المطلقة تضمن عدم تحرك الرقم عند تغيير الحجم */
+  /* السنترة تضمن دقة الموقع على الخريطة */
   transform: translate(-50%, -50%); 
   z-index: 10;
   cursor: pointer;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
-/* 5. وضع ملء الشاشة والدوران (Fullscreen Mode) */
-@media screen and (max-width: 768px) {
-  /* عندما يأخذ الأب كلاس fullscreen-mode */
+/* 5. وضع Fullscreen والدوران الإجباري للموبايل */
+@media screen and (max-width: 768px) and (orientation: portrait) {
+  /* عندما يتم تفعيل الكلاس عبر JavaScript */
   .fullscreen-mode .map-wrapper {
     position: absolute;
-    /* دوران الخريطة 90 درجة */
+    /* لف الخريطة 90 درجة */
     transform: rotate(90deg);
-    /* العرض يصبح هو طول الشاشة المتاح مع خصم مساحة بسيطة للبادنج */
-    width: calc(100dvh - 20px) !important; 
-    height: auto !important;
+    /* العرض يصبح هو طول الشاشة المتاح مع ترك مسافة أمان (Padding) */
+    width: calc(100dvh - 40px) !important; 
+    height: auto !important; /* هام جداً لثبات الأرقام */
   }
 
-  /* تدوير الأرقام عكسياً لتظل معدولة أمام عين المستخدم */
+  /* عدلة الأرقام لتظل معدولة للمستخدم بعد الدوران */
   .fullscreen-mode .marker {
     transform: translate(-50%, -50%) rotate(-90deg) !important;
   }
 
-  /* 6. المودال (البوب أب): يجب أن يلف بنفس اتجاه الخريطة */
+  /* 6. المودال (الصور الفرعية): يجب أن يلف بنفس اتجاه الخريطة */
   .fullscreen-mode .modal-card {
     transform: rotate(90deg);
-    /* يضمن عدم قص الصورة الفرعية وظهورها بالكامل */
+    /* نضمن عدم خروج الصورة الفرعية عن الشاشة */
     width: calc(100dvh - 80px) !important;
     max-width: 85vw !important;
   }
 
-  /* تدوير زر الإغلاق X */
+  /* عدلة زر الإغلاق X */
   .fullscreen-mode .close-x {
     transform: rotate(-90deg);
   }
@@ -113,7 +109,6 @@
 
 .modal-card {
   position: relative;
-  background: transparent;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -123,7 +118,7 @@
 .modal-content-img {
   width: 100%;
   max-height: 80vh;
-  object-fit: contain; /* يضمن ظهور كامل الصورة بدون قص */
+  object-fit: contain; /* تضمن ظهور الصورة كاملة بدون قص */
   border-radius: 15px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.8);
 }
@@ -131,7 +126,7 @@
 .close-x {
   position: absolute;
   top: -20px;
-  right: -10px;
+  right: -15px;
   width: 44px;
   height: 44px;
   background: #ff0000;
@@ -145,9 +140,4 @@
   align-items: center;
   cursor: pointer;
   z-index: 10000;
-}
-
-/* حالة خاصة إذا كانت الصورة رقم 1 أو 6 تحتاج تعديل */
-.special-case .modal-content-img {
-  border: 2px solid #2ecc71;
 }

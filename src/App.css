@@ -14,15 +14,19 @@
 
 /* 2. زر بدء التجربة */
 .start-btn {
-  position: absolute;
+  position: absolute; 
+  bottom: 20px; /* المسافة من الأسفل */
+  right: 20px;  /* المسافة من اليمين */
   z-index: 1000;
   padding: 12px 24px;
   background: #2ecc71;
-  color: white;
-  border: 2px solid white;
-  border-radius: 50px;
-  font-weight: bold;
-  cursor: pointer;
+  /* بقية التنسيقات كما هي */
+}
+
+.start-btn:hover {
+  background: #27ae60;
+  transform: scale(1.05);
+  transition: all 0.3s ease;
 }
 
 /* 3. حاوية الخريطة: السر في ثبات الأرقام */
@@ -43,13 +47,12 @@
   display: block;
   border-radius: 12px;
 }
-
-/* 4. تصميم النقاط (Markers) */
+/* تحديث تصميم النقاط في App.css */
 .map-marker {
   position: absolute;
   width: 32px;
   height: 32px;
-  background: #2ecc71;
+  background: #2ecc71; /* اللون الأخضر كما في الصورة */
   color: white;
   border-radius: 50%;
   display: flex;
@@ -58,10 +61,39 @@
   font-weight: bold;
   font-size: 14px;
   border: 2px solid white;
-  /* السنترة المطلقة تضمن عدم تحرك الرقم عند الدوران */
+  
+  /* السنترة المطلقة لضمان الدقة */
   transform: translate(-50%, -50%); 
   z-index: 10;
   cursor: pointer;
+
+  /* إضافة تأثير التوهج */
+  box-shadow: 0 0 10px rgba(46, 204, 113, 0.7);
+  animation: marker-pulse 2s infinite ease-in-out;
+}
+
+/* حركة التوهج والنبط */
+@keyframes marker-pulse {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(46, 204, 113, 0.6), 0 0 15px rgba(46, 204, 113, 0.4);
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(46, 204, 113, 1), 0 0 35px rgba(46, 204, 113, 0.6);
+    transform: translate(-50%, -50%) scale(1.1); /* تكبير بسيط عند التوهج */
+  }
+}
+
+/* تدوير الأرقام عكسياً في وضع الموبايل مع الحفاظ على التوهج */
+.rotated-mode .map-marker {
+  transform: translate(-50%, -50%) rotate(-90deg) !important;
+  /* نعدل حركة الـ animation لتناسب التدوير */
+  animation: marker-pulse-rotated 2s infinite ease-in-out;
+}
+
+@keyframes marker-pulse-rotated {
+  0%, 100% { transform: translate(-50%, -50%) rotate(-90deg) scale(1); }
+  50% { transform: translate(-50%, -50%) rotate(-90deg) scale(1.1); }
 }
 
 /* ====================================================== */
@@ -119,37 +151,60 @@
   backdrop-filter: blur(5px);
 }
 
+/* App.css */
+
+/* 1. تنسيق جسم المودال ليكون حاوية منضبطة */
 .modal-body {
-  position: relative;
+  position: relative; /* ضروري جداً عشان زر الإغلاق يتموضع بالنسبة له */
+  width: auto;
+  max-width: 90%; /* عشان ميكونش عملاق على الموبايل */
+  background: transparent; /* الخلفية شفافة عشان الصورة هي اللي تظهر */
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  /* نلغي أي حواف أو خلفيات بيضاء زائدة */
+  box-shadow: none; 
+  border: none;
 }
 
+/* 2. تنسيق الصورة نفسها */
 .content-img {
-  width: 100%;
-  max-height: 80vh;
-  object-fit: contain; /* يضمن ظهور كامل الصورة بدون أي قص */
-  border-radius: 15px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+  width: auto; /* العرض تلقائي */
+  height: auto; /* الطول تلقائي */
+  max-width: 100%;
+  max-height: 80vh; /* نضمن إنها متطولش أوي */
+  object-fit: contain; /* تظهر كاملة بدون قص */
+  border-radius: 15px; /* حواف ناعمة للصورة المستطيلة */
+  box-shadow: 0 15px 40px rgba(0,0,0,0.6); /* ظل تقيل يديها فخامة */
+  border: 3px solid #2ecc71; /* إطار أخضر رفيع وشيك حول الصورة */
 }
 
+/* 3. التنسيق الجديد والمضبوط لزر الإغلاق X */
 .btn-close {
   position: absolute;
-  top: -20px;
+  /* الأرقام دي هتخليه "يركب" على الزاوية اليمين فوق بالظبط */
+  top: -15px;
   right: -15px;
-  width: 44px;
-  height: 44px;
-  background: #ff0000;
+  
+  width: 40px;
+  height: 40px;
+  background: #e74c3c; /* لون أحمر جذاب */
   color: white;
   border-radius: 50%;
-  border: 3px solid white;
-  font-size: 28px;
+  border: 3px solid white; /* إطار أبيض يفصله عن الصورة */
+  font-size: 24px;
   font-weight: bold;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   z-index: 10000;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+  transition: all 0.3s ease;
+}
+
+/* حركة بسيطة عند الوقوف على الزر */
+.btn-close:hover {
+  transform: scale(1.1) rotate(90deg);
+  background: #c0392b;
 }

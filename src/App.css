@@ -78,16 +78,40 @@
 
 /* التدوير التلقائي في الموبايل */
 @media screen and (max-width: 768px) and (orientation: portrait) {
+  /* 1. تدوير حاوية الخريطة */
   .map-wrapper {
     transform: rotate(90deg);
-    width: 90vh; /* تصبح العرض هو الطول */
+    width: 90vh; /* العرض هنا بقى هو طول الشاشة */
+    transform-origin: center;
   }
+
+  /* 2. تدوير الأرقام عكس الاتجاه عشان تظهر معدولة للمستخدم */
   .marker {
-    /* تصغير حجم النقاط قليلاً في الموبايل لتناسب المساحة */
-    width: 28px !important;
-    height: 28px !important;
-    font-size: 12px !important;
     transform: translate(-50%, -50%) rotate(-90deg) !important;
+  }
+
+  /* 3. تدوير المودال (البوب أب) بنفس اتجاه الخريطة */
+  .modal {
+    transform: rotate(90deg);
+    /* بما إننا لفينا المودال، الـ width بتاعنا لازم يتناسب مع طول الشاشة (vh) */
+    width: 85vh !important; 
+    max-width: 500px !important;
+    transform-origin: center;
+  }
+
+  /* 4. تدوير صورة المودال لضمان ملء المساحة */
+  .modal-img {
+    max-height: 70vw; /* هنا استخدمنا vw لأن الشاشة مقلوبة */
+    object-fit: contain;
+  }
+
+  /* 5. عدلة زرار الإغلاق (الـ X) */
+  .close-btn {
+    /* بنلف الزرار عكسي عشان حرف الـ X يظهر معدول وميظهرش كأنه علامة + مائلة */
+    transform: rotate(-90deg);
+    /* ترحيل مكانه شوية عشان يناسب الزاوية الجديدة */
+    top: -10px;
+    right: -25px;
   }
 }
 

@@ -40,7 +40,7 @@ function App() {
               /* المفتاح (key) ضروري جداً لمنع تكرار الصور عند التنقل */
               key={activeArea.id} 
               
-              /* كلاس مخصص للمنطقة 4 إذا كانت أكبر من الشاشة */
+              /* كلاس مخصص للمنطقة 1 إذا كانت أكبر من الشاشة */
               className={`modal ${activeArea.id === 1 ? 'special-case' : ''} ${activeArea.id === 6 ? 'rounded-fix' : ''}`}
               
               initial={{ scale: 0.7, opacity: 0 }}

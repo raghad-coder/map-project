@@ -65,6 +65,8 @@
   border: 1.5px solid white;
   transform: translate(-50%, -50%); /* سنترة فقط بدون rotate */
   z-index: 10;
+  box-shadow: 0 0 10px rgba(46, 204, 113, 0.7);
+  animation: pulse-glow 2s infinite ease-in-out;
 }
 
 /* تنسيق المودال في الوضع الطبيعي */
@@ -85,28 +87,23 @@
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
-/* حركة التوهج والنبط */
-@keyframes marker-pulse {
-  0%, 100% {
-    box-shadow: 0 0 8px rgba(46, 204, 113, 0.6), 0 0 15px rgba(46, 204, 113, 0.4);
+
+@keyframes pulse-glow {
+  0% {
+    /* توهج خفيف وحجم طبيعي */
+    box-shadow: 0 0 5px rgba(46, 204, 113, 0.6);
     transform: translate(-50%, -50%) scale(1);
   }
   50% {
-    box-shadow: 0 0 20px rgba(46, 204, 113, 1), 0 0 35px rgba(46, 204, 113, 0.6);
-    transform: translate(-50%, -50%) scale(1.1); /* تكبير بسيط عند التوهج */
+    /* توهج قوي وتكبير بسيط جداً لجذب الانتباه */
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.9), 0 0 30px rgba(46, 204, 113, 0.4);
+    transform: translate(-50%, -50%) scale(1.1);
   }
-}
-
-/* تدوير الأرقام عكسياً في وضع الموبايل مع الحفاظ على التوهج */
-.rotated-mode .map-marker {
-  transform: translate(-50%, -50%) rotate(-90deg) !important;
-  /* نعدل حركة الـ animation لتناسب التدوير */
-  animation: marker-pulse-rotated 2s infinite ease-in-out;
-}
-
-@keyframes marker-pulse-rotated {
-  0%, 100% { transform: translate(-50%, -50%) rotate(-90deg) scale(1); }
-  50% { transform: translate(-50%, -50%) rotate(-90deg) scale(1.1); }
+  100% {
+    /* العودة للحالة الأولى */
+    box-shadow: 0 0 5px rgba(46, 204, 113, 0.6);
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 /* ====================================================== */

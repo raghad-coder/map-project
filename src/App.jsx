@@ -43,13 +43,6 @@ function App() {
 
   return (
     <div className="app-holder"> {/* حذفنا الشرط الخاص بـ rotated-mode */}
-    
-    {!isFS && (
-      <button className="start-btn" onClick={handleStart}>
-        تفعيل الخريطة الذكية ⛶
-      </button>
-    )}
-
     <div className="map-box">
       <img src="/map.png" alt="Map" className="map-img" />
       {areaData.map((item) => (

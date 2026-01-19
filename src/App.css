@@ -1,6 +1,7 @@
-#root {
+/* 1. إعدادات الصفحة الأساسية لضمان ملء الشاشة */
+#root, .container {
   width: 100%;
-  height: 100dvh; /* dvh تعني الارتفاع الحقيقي للشاشة حتى مع وجود شريط المتصفح */
+  height: 100dvh; /* dvh لضمان الطول الحقيقي حتى مع شريط المتصفح */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -8,39 +9,29 @@
   margin: 0;
   padding: 0;
   overflow: hidden;
-  touch-action: manipulation; /* تحسين استجابة اللمس */
+  touch-action: manipulation;
 }
 
-/* تحسين الخريطة لتكون متجاوبة */
-.map-wrapper {
-  position: relative;
-  width: 100%;
-  height: auto;
-  max-width: 100%;
-  transition: transform 0.4s ease-in-out;
-}
-
-/* لضمان السنترة في الشاشات العريضة (Landscape) */
-@media screen and (orientation: landscape) {
-  .large-modal {
-    max-width: 600px; /* تحديد عرض مناسب لكي لا تصبح الصورة ضخمة جداً */
-  }
-}
-
+/* 2. حاوية الخريطة الأساسية */
 .map-wrapper {
   position: relative;
   width: 100vw;
   max-width: 1000px;
-  transition: all 0.5s ease;
+  transition: all 0.5s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .main-map {
   width: 100%;
+  height: auto;
   display: block;
   border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-/* تصميم الأرقام (Markers) */
+/* 3. تصميم النقاط (Markers) مع تأثير النبض */
 .marker {
   position: absolute;
   width: 32px;
@@ -55,11 +46,10 @@
   cursor: pointer;
   border: 2px solid white;
   transform: translate(-50%, -50%);
-  box-shadow: 0 0 15px rgba(0,0,0,0.4);
   z-index: 10;
+  box-shadow: 0 0 15px rgba(0,0,0,0.4);
 }
 
-/* تأثير النبض الاحترافي */
 .marker::after {
   content: '';
   position: absolute;
@@ -69,257 +59,129 @@
   background: inherit;
   animation: pulse 2s infinite;
   z-index: -1;
+  will-change: transform, opacity;
 }
 
 @keyframes pulse {
   0% { transform: scale(1); opacity: 0.8; }
-  100% { transform: scale(2); opacity: 0; }
+  100% { transform: scale(2.5); opacity: 0; }
 }
 
-/* التدوير التلقائي في الموبايل */
-@media screen and (max-width: 768px) and (orientation: portrait) {
-  /* 1. تدوير حاوية الخريطة */
-  .map-wrapper {
-    transform: rotate(90deg);
-    width: 90vh; /* العرض هنا بقى هو طول الشاشة */
-    transform-origin: center;
-  }
-
-  /* 2. تدوير الأرقام عكس الاتجاه عشان تظهر معدولة للمستخدم */
-  .marker {
-    transform: translate(-50%, -50%) rotate(-90deg) !important;
-  }
-
-  /* 3. تدوير المودال (البوب أب) بنفس اتجاه الخريطة */
-  .modal {
-    transform: rotate(90deg);
-    /* بما إننا لفينا المودال، الـ width بتاعنا لازم يتناسب مع طول الشاشة (vh) */
-    width: 85vh !important; 
-    max-width: 500px !important;
-    transform-origin: center;
-  }
-
-  /* 4. تدوير صورة المودال لضمان ملء المساحة */
-  .modal-img {
-    max-height: 70vw; /* هنا استخدمنا vw لأن الشاشة مقلوبة */
-    object-fit: contain;
-  }
-
-  /* 5. عدلة زرار الإغلاق (الـ X) */
-  .close-btn {
-    /* بنلف الزرار عكسي عشان حرف الـ X يظهر معدول وميظهرش كأنه علامة + مائلة */
-    transform: rotate(-90deg);
-    /* ترحيل مكانه شوية عشان يناسب الزاوية الجديدة */
-    top: -10px;
-    right: -25px;
-  }
+/* 4. زر تفعيل وضع ملء الشاشة */
+.start-btn {
+  position: fixed;
+  bottom: 30px;
+  z-index: 5000;
+  padding: 12px 25px;
+  background-color: #2ecc71;
+  color: white;
+  border: 2px solid white;
+  border-radius: 50px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.4);
 }
 
-/* تنسيق البوب أب (Modal) */
-/* ... الكود القديم الخاص بالـ root والـ marker والـ map-wrapper كما هو ... */
-
-/* تنسيق الـ Overlay (الخلفية المظلمة) */
+/* 5. شاشة البوب أب (Overlay & Modal) */
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.9);
   display: flex;
   justify-content: center;
-  align-items: center; /* سنترة عمودية دقيقة */
-  z-index: 2000;
+  align-items: center;
+  z-index: 6000;
   backdrop-filter: blur(8px);
-  padding: 15px; /* مسافة أمان من حواف الشاشة */
 }
 
-/* تنسيق المودال (البطاقة الملونة فقط) */
-/* تنسيق المودال - تأكدي من إضافة overflow: visible */
 .modal {
-  max-height: 70vh; /* ضمان عدم خروج الصورة عن سقف الشاشة */
-  object-fit: contain;
   position: relative;
-  width: 100%;
-  max-width: 420px;
-  border-radius: 20px;
-  background-color: transparent; /* لكي يظهر الجزء الملون فقط */
-  overflow: visible; /* هام جداً لكي يبرز الزر خارج الحواف */
+  width: 90%;
+  max-width: 450px;
+  background-color: transparent;
+  overflow: visible !important;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
-/* زر الإغلاق الدائري المضمون */
+.modal-img {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  object-fit: contain; /* يضمن ظهور الصورة كاملة بدون قص */
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+}
+
+/* 6. زر الإغلاق الأحمر */
 .close-btn {
   position: absolute;
   top: -20px;
   right: -15px;
-  
-  /* أبعاد متساوية تماماً لضمان الدائرة */
   width: 44px;
   height: 44px;
-  
   background-color: #ff0000;
   color: white;
   border-radius: 50%;
   border: 3px solid white;
-  
-  /* أهم جزء للسنترة */
   display: flex;
-  justify-content: center; /* سنترة أفقية */
-  align-items: center;     /* سنترة عمودية */
-  padding: 0;
-  margin: 0;
-  
-  /* ضبط الخط */
-  font-size: 28px;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
   font-weight: bold;
-  /* line-height: 1 يضمن عدم وجود مساحة إضافية تحت الحرف */
-  line-height: 1; 
-  
-  /* لمنع أي انزياح بسبب نوع الخط */
-  font-family: Arial, sans-serif; 
-  
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  z-index: 120;
-  transition: all 0.2s ease-in-out;
-}
-.modal-img {
-  width: 100%;
-  max-height: 70vh; /* ضمان عدم خروج الصورة عن سقف الشاشة */
-  object-fit: contain;
-  height: auto;
-  border-radius: 20px;
-  display: block;
-}
-
-.close-btn:hover {
-  transform: scale(1.1);
-  background-color: #e60000;
-}
-
-
-/* إخفاء أي نصوص إضافية إذا كانت الصورة تحتوي على النص بالفعل */
-.modal h2, .modal p {
-  display: none; 
-}
-
-/* تعديل خاص فقط للمنطقة رقم1 لضمان عدم قص الزر الأحمر */
-.modal.special-case {
-  max-height: 85vh; /* تحديد أقصى طول لكي لا تخرج عن الشاشة */
-  width: auto;      /* تجعل العرض يتناسب مع الصورة */
-  max-width: 90vw;
-  overflow: visible !important; /* السماح للزر بالظهور كاملاً فوق الحافة */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ضبط الصورة داخل المنطقة 1 */
-.special-case .modal-img {
-  max-height: 80vh; /* تصغير الصورة قليلاً لتعطي مساحة للزر */
-  object-fit: contain; /* منع تمطيط الصورة */
-  border-radius: 15px;
-}
-
-/* ضبط زر الـ X في المنطقة 1 ليكون واضحاً وبعيداً عن الكلام */
-.special-case .close-btn {
-  top: -15px;  /* رفعه للأعلى قليلاً */
-  right: -10px; /* تحريكه للطرف */
-  width: 42px; /* دائرة مثالية */
-  height: 42px;
-  background-color: #ff0000;
-  border: 3px solid white;
-  font-weight: 900;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
   line-height: 0;
-}
-/* هذا التعديل سيعيد التوازن للصورة رقم 6 ويجعلها تظهر كبطاقة (Card) */
-.rounded-fix {
-  /* نحدد عرضاً ثابتاً يشبه بقية الصور */
-  width: 90vw !important; 
-  max-width: 400px !important;
-  
-  /* نحدد نسبة تناسق للبطاقة لكي لا تظهر كمستطيل نحيف */
-  aspect-ratio: 3 / 2; /* يمكنك تغييرها لـ 1/1 إذا أردتها مربعة تماماً */
-  
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #575757; /* لون خلفية اختياري يطابق الصورة الرمادية */
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-.rounded-fix .modal-img {
-  width: 100%;
-  height: 100%;
-  /* الـ cover سيضمن أن الصورة تملأ المساحة المخصصة لها دون تمطيط (Stretch) */
-  object-fit: cover; 
-}
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000;
-  backdrop-filter: blur(8px);
-  /* بنزود مساحة الأمان هنا عشان الزرار ميتخبطش في سقف الشاشة */
-  padding: 40px 20px; 
-}
-.modal {
-  position: relative;
-  width: 95%; /* عرض مرن */
-  max-width: 400px;
-  background-color: transparent;
-  /* أهم خاصية: التأكد إن أي حاجة "طائرة" برا المربع تبان */
-  overflow: visible !important; 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.modal-img {
-  width: 100%;
-  /* حددنا أقصى طول عشان نسيب مكان للزرار فوق وتحت */
-  max-height: 80vh; 
-  object-fit: contain;
-  border-radius: 20px;
-  display: block;
-  /* إضافة ظل عشان الصورة الرمادية تبان منفصلة عن الخلفية السوداء */
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-
-.fullscreen-btn {
-  position: fixed;
-  top: 20px;    /* مكانه في الزاوية العلوية */
-  left: 20px;
-  z-index: 5000; /* رقم عالي جداً ليكون فوق الخريطة والمودال */
-  background: rgba(46, 204, 113, 0.9); /* لون أخضر شفاف قليلاً */
-  color: white;
-  border: 2px solid white;
-  padding: 8px 15px;
-  border-radius: 8px;
-  font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-  font-family: sans-serif;
-  transition: all 0.2s ease;
+  z-index: 7000;
 }
 
-.fullscreen-btn:active {
-  transform: scale(0.95);
-}
+/* ====================================================== */
+/* السحر: تدوير الخريطة ومنع القص في وضع الموبايل (Portrait) */
+/* ====================================================== */
 
-/* في الموبايل عند الدوران، الزر يحتاج يلف عشان المستخدم يعرف يقرأه */
 @media screen and (max-width: 768px) and (orientation: portrait) {
-  .fullscreen-btn {
+  
+  /* تدوير المحتوى فقط عند تفعيل الفول سكرين */
+  .force-view .map-wrapper {
     transform: rotate(90deg);
-    top: 50%; /* سنترة الزرار على جنب الشاشة بعد اللف */
-    left: 10px;
-    transform-origin: left center;
+    /* العرض يصبح هو طول الشاشة المتاح */
+    width: calc(100dvh - 20px) !important; 
+    /* الارتفاع يصبح هو عرض الموبايل */
+    height: 100vw !important; 
+    transform-origin: center;
   }
+
+  .force-view .main-map {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* لضمان ظهور العنوان وكل أطراف الخريطة */
+  }
+
+  /* عدلة الأرقام لتظل باصة للمستخدم */
+  .force-view .marker {
+    transform: translate(-50%, -50%) rotate(-90deg) !important;
+  }
+
+  /* تدوير المودال (الصور) بنفس اتجاه الخريطة */
+  .force-view .modal {
+    transform: rotate(90deg);
+    width: calc(100dvh - 100px) !important;
+    max-width: 85vw !important;
+  }
+
+  /* عدلة زر الإغلاق */
+  .force-view .close-btn {
+    transform: rotate(-90deg);
+  }
+
+  /* تعديل مكان زر البداية عند التدوير */
+  .force-view .start-btn {
+    display: none; /* نخفيه بعد البدء لتوفير مساحة */
+  }
+}
+
+/* حالات خاصة للصور */
+.rounded-fix {
+  background-color: #333;
+  border-radius: 20px;
 }
